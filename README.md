@@ -1,6 +1,6 @@
 # Superior Closings CRM 
 
-A powerful, AI-driven Lead Management System designed for high-performance title agents. Built with a focus on automation, aesthetic excellence, and multi-channel outreach.
+A powerful, AI-driven Lead Management System designed for high-performance title agents. Built with a focus on automation and multi-channel outreach.
 
 ## Key Features
 
@@ -12,11 +12,6 @@ A powerful, AI-driven Lead Management System designed for high-performance title
 - **Robust Scheduling**: Powered by **BullMQ & Redis** to handle reliable, delayed job execution.
 - **Smart Follow-ups**: Automatically schedules SMS/Email follow-ups (e.g., *"Follow up in 3 days"*).
 - **Multi-Channel**: Seamlessly sends messages via **Twilio (SMS)** and **SendGrid (Email)**.
-
-### Premium "Ethereal Minimalist" UI
-- **Modern Design**: Features a "Slate + Indigo" dual-tone theme with mesh gradients and glassmorphism.
-- **Interactive Dashboard**: Real-time stats, lead tracking, and quick actions.
-- **Bulk Operations**: Drag-and-drop CSV uploader with duplicate detection and validation.
 
 ### Enterprise-Grade
 - **Security**: JWT Authentication, Helmet headers, and Rate Limiting.
@@ -106,4 +101,3 @@ The project includes a suite of test scripts and simulations.
 This project is licensed under the ISC License.
 
 ---
-*Built with ❤️ by Amishi*
