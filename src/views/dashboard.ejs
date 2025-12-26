@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Superior Closings</title>
+
+    <!-- Design System: Ethereal Minimalist -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0f172a', // Solid Black/Slate
+                        'primary-hover': '#334155',
+                        accent: '#6366f1', // Ethereal Indigo
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                        surface: 'rgba(255, 255, 255, 0.7)', // Glass
+                        'surface-hover': 'rgba(255, 255, 255, 0.9)',
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Ethereal Mesh Gradient Background */
+        body {
+            background-color: #f8fafc;
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            background-image:
+                radial-gradient(at 10% 10%, rgba(230, 230, 255, 0.8) 0%, transparent 60%),
+                radial-gradient(at 90% 10%, rgba(220, 240, 255, 0.8) 0%, transparent 60%),
+                radial-gradient(at 50% 90%, rgba(240, 230, 250, 0.5) 0%, transparent 80%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .glass-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 antialiased min-h-screen selection:bg-accent selection:text-white">
+    <!-- Navigation -->
+    <nav class="glass-panel sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-building text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">CRM</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700" id="userName">Loading...</span>
+                    </div>
+                    <button data-action="logout"
+                        class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Welcome back!</h2>
+            <p class="text-gray-600">Manage your leads and track your progress</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div
+                class="glass-panel rounded-2xl hover:shadow-glass transition-all duration-300 transform hover:-translate-y-1">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-indigo-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Total Leads</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalLeads">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="glass-panel rounded-2xl hover:shadow-glass transition-all duration-300 transform hover:-translate-y-1">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-star text-indigo-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Qualified</p>
+                            <p class="text-2xl font-bold text-gray-900" id="qualifiedLeads">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="glass-panel rounded-2xl hover:shadow-glass transition-all duration-300 transform hover:-translate-y-1">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-phone text-indigo-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Contacted</p>
+                            <p class="text-2xl font-bold text-gray-900" id="contactedLeads">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="glass-panel rounded-2xl hover:shadow-glass transition-all duration-300 transform hover:-translate-y-1">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-indigo-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Closed</p>
+                            <p class="text-2xl font-bold text-gray-900" id="closedLeads">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Lead Status Chart -->
+            <div class="glass-panel rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Lead Status Distribution</h3>
+                <div class="h-64">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Trends Chart -->
+            <div class="glass-panel rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Monthly Lead Trends</h3>
+                <div class="h-64">
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Bar -->
+        <div class="glass-panel rounded-2xl mb-6">
+            <div class="px-6 py-5">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Lead Management</h3>
+                        <p class="mt-1 text-sm text-gray-500">Create, update, and track your leads</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 flex flex-wrap gap-3">
+                        <button data-action="create-lead"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 hover:scale-105 active:scale-95">
+                            <i class="fas fa-plus mr-2"></i> Add New Lead
+                        </button>
+                        <a href="/bulk-upload"
+                            class="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors duration-200">
+                            <i class="fas fa-upload mr-2"></i> Bulk Upload
+                        </a>
+                        <a href="/sms-instructions"
+                            class="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors duration-200">
+                            <i class="fas fa-sms mr-2"></i> SMS Commands
+                        </a>
+                        <button data-action="refresh"
+                            class="glass-button inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            <i class="fas fa-sync-alt mr-2"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Leads</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Contact</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Created</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white/50 divide-y divide-gray-200" id="leadsTableBody">
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <p>Loading leads...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Lead Modal -->
+    <div id="createLeadModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="glass-panel relative top-20 mx-auto p-5 border-0 w-full max-w-md shadow-2xl rounded-2xl">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Add New Lead</h3>
+                    <button data-action="close-create-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="createLeadForm">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                            <input type="text" id="leadName" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="leadEmail"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" id="leadPhone"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select id="leadStatus"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                                <option value="new">New</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="proposal_sent">Proposal Sent</option>
+                                <option value="closed">Closed</option>
+                                <option value="lost">Lost</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                            <textarea id="leadNotes" rows="3"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                placeholder="Add any notes about this lead..."></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" data-action="close-create-modal"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                            Cancel
+                        </button>
+                        <button type="submit" id="createLeadBtn"
+                            class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                            <span id="createBtnText">Create Lead</span>
+                            <i id="createBtnSpinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lead Detail Modal -->
+    <div id="leadDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="glass-panel relative top-10 mx-auto p-5 border-0 w-full max-w-2xl shadow-2xl rounded-2xl">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900" id="leadDetailTitle">Lead Details</h3>
+                    <button data-action="close-detail-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="leadDetailContent">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Lead Modal -->
+    <div id="editLeadModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="glass-panel relative top-20 mx-auto p-5 border-0 w-full max-w-md shadow-2xl rounded-2xl">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Edit Lead</h3>
+                    <button data-action="close-edit-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="editLeadForm">
+                    <input type="hidden" id="editLeadId">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                            <input type="text" id="editLeadName" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="editLeadEmail"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" id="editLeadPhone"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select id="editLeadStatus"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200">
+                                <option value="new">New</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="proposal_sent">Proposal Sent</option>
+                                <option value="closed">Closed</option>
+                                <option value="lost">Lost</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" data-action="close-edit-modal"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                            Cancel
+                        </button>
+                        <button type="submit" id="editLeadBtn"
+                            class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                            <span id="editBtnText">Update Lead</span>
+                            <i id="editBtnSpinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        let currentLead = null;
+        let statusChart = null;
+        let trendsChart = null;
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+            // Set up event listeners to replace inline onclick handlers
+            setupEventListeners();
+
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            document.getElementById('userName').textContent = user.name || 'Agent';
+            loadDashboard();
+            setupSocket();
+        });
+
+        function setupSocket() {
+            const socket = io();
+
+            socket.on('connect', () => {
+                console.log('Connected to socket server');
+            });
+
+            socket.on('lead:update', (data) => {
+                const { type, lead } = data;
+                console.log('Received lead update:', type, lead);
+
+                // Show toast notification
+                const msg = type === 'create'
+                    ? `New Lead: ${lead.name}`
+                    : `Lead Updated: ${lead.name}`;
+                showToast(msg, 'info'); // Using existing showToast function 'info' type (blue)
+
+                // Refresh dashboard data
+                loadDashboard();
+            });
+        }
+
+        async function loadDashboard() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/web/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load dashboard');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    updateStats(data.stats, data.leads);
+                    updateLeadsTable(data.leads);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                if (error.message.includes('401')) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login';
+                } else {
+                    showToast('Error loading dashboard', 'error');
+                }
+            }
+        }
+
+        function setupEventListeners() {
+            // Logout button
+            const logoutBtn = document.querySelector('[data-action="logout"]');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // Create lead button
+            const createLeadBtn = document.querySelector('[data-action="create-lead"]');
+            if (createLeadBtn) {
+                createLeadBtn.addEventListener('click', openCreateLeadModal);
+            }
+
+            // Refresh button
+            const refreshBtn = document.querySelector('[data-action="refresh"]');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', loadDashboard);
+            }
+
+            // Close modal buttons
+            // Close modal buttons - UPDATED to handle multiple buttons
+            document.querySelectorAll('[data-action="close-create-modal"]').forEach(btn => {
+                btn.addEventListener('click', closeCreateLeadModal);
+            });
+
+            document.querySelectorAll('[data-action="close-detail-modal"]').forEach(btn => {
+                btn.addEventListener('click', closeLeadDetailModal);
+            });
+
+            document.querySelectorAll('[data-action="close-edit-modal"]').forEach(btn => {
+                btn.addEventListener('click', closeEditLeadModal);
+            });
+
+            // Add note button
+            const addNoteBtn = document.querySelector('[data-action="add-note"]');
+            if (addNoteBtn) {
+                addNoteBtn.addEventListener('click', addNote);
+            }
+
+            // Set follow-up button - removed from here since it's set up in viewLead function
+
+            // Event delegation for dynamic buttons in table rows
+            document.addEventListener('click', function (e) {
+                console.log('Click event:', e.target, e.target.className);
+
+                if (e.target.matches('.view-lead-btn') || e.target.closest('.view-lead-btn')) {
+                    const button = e.target.matches('.view-lead-btn') ? e.target : e.target.closest('.view-lead-btn');
+                    const leadId = button.getAttribute('data-lead-id');
+                    console.log('View lead clicked:', leadId);
+                    viewLead(leadId);
+                } else if (e.target.matches('.edit-lead-btn') || e.target.closest('.edit-lead-btn')) {
+                    const button = e.target.matches('.edit-lead-btn') ? e.target : e.target.closest('.edit-lead-btn');
+                    const leadId = button.getAttribute('data-lead-id');
+                    console.log('Edit lead clicked:', leadId);
+                    editLead(leadId);
+                } else if (e.target.matches('[data-action="close-toast"]') || e.target.closest('[data-action="close-toast"]')) {
+                    const button = e.target.matches('[data-action="close-toast"]') ? e.target : e.target.closest('[data-action="close-toast"]');
+                    const toastId = button.getAttribute('data-toast-id');
+                    closeToast(toastId);
+                }
+            });
+        }
+
+        function updateStats(stats, leads = []) {
+            document.getElementById('totalLeads').textContent = stats.total;
+            document.getElementById('qualifiedLeads').textContent = stats.qualified;
+            document.getElementById('contactedLeads').textContent = stats.contacted;
+            document.getElementById('closedLeads').textContent = stats.closed;
+
+            // Update charts
+            updateCharts(stats, leads);
+        }
+
+        function updateCharts(stats, leads) {
+            // Check if Chart.js is loaded
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js not loaded, showing fallback display');
+                showChartFallback(stats);
+                return;
+            }
+
+            // Status Distribution Chart
+            if (statusChart) {
+                statusChart.destroy();
+            }
+
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Closed', 'Lost'],
+                    datasets: [{
+                        data: [stats.new, stats.contacted, stats.qualified, stats.proposal_sent, stats.closed, stats.lost],
+                        backgroundColor: [
+                            '#6366f1', // Primary Accent (Indigo)
+                            '#334155', // Hover (Dark Gray)
+                            '#475569', // Slate 600
+                            '#64748b', // Slate 500
+                            '#94a3b8', // Slate 400
+                            '#cbd5e1'  // Slate 300
+                        ],
+                        borderWidth: 0,
+                        borderColor: 'transparent'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Monthly Trends Chart (simulated data for now)
+            if (trendsChart) {
+                trendsChart.destroy();
+            }
+
+            // Process leads for monthly trends (Last 6 Months)
+            const today = new Date();
+            const monthlyLabels = [];
+            const newLeadsData = new Array(6).fill(0);
+            const closedLeadsData = new Array(6).fill(0);
+
+            // Generate labels for last 6 months
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                monthlyLabels.push(d.toLocaleString('default', { month: 'short' }));
+            }
+
+            // Aggregate data if leads exist
+            if (leads && leads.length > 0) {
+                leads.forEach(lead => {
+                    const createdDate = new Date(lead.createdAt);
+                    const monthDiff = (today.getFullYear() - createdDate.getFullYear()) * 12 + (today.getMonth() - createdDate.getMonth());
+
+                    if (monthDiff >= 0 && monthDiff < 6) {
+                        const index = 5 - monthDiff;
+                        newLeadsData[index]++;
+                        if (lead.status === 'closed') closedLeadsData[index]++;
+                    }
+                });
+            }
+
+            const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+            trendsChart = new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: 'New Leads',
+                        data: newLeadsData,
+                        borderColor: '#6366f1', // Indigo 500
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Closed Leads',
+                        data: closedLeadsData,
+                        borderColor: '#64748b', // Slate 500
+                        backgroundColor: 'rgba(100, 116, 139, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showChartFallback(stats) {
+            // Status Distribution Fallback
+            const statusChartContainer = document.getElementById('statusChart').parentElement;
+            statusChartContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-64 text-gray-500">
+                    <div class="text-2xl mb-4">📊</div>
+                    <h4 class="text-lg font-semibold mb-4">Lead Status Distribution</h4>
+                    <div class="grid grid-cols-2 gap-4 w-full max-w-md">
+                        <div class="text-center p-3 bg-blue-50 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-600">${stats.new}</div>
+                            <div class="text-sm text-blue-800">New</div>
+                        </div>
+                        <div class="text-center p-3 bg-yellow-50 rounded-lg">
+                            <div class="text-2xl font-bold text-yellow-600">${stats.contacted}</div>
+                            <div class="text-sm text-yellow-800">Contacted</div>
+                        </div>
+                        <div class="text-center p-3 bg-purple-50 rounded-lg">
+                            <div class="text-2xl font-bold text-purple-600">${stats.qualified}</div>
+                            <div class="text-sm text-purple-800">Qualified</div>
+                        </div>
+                        <div class="text-center p-3 bg-indigo-50 rounded-lg">
+                            <div class="text-2xl font-bold text-indigo-600">${stats.proposal_sent}</div>
+                            <div class="text-sm text-indigo-800">Proposal</div>
+                        </div>
+                        <div class="text-center p-3 bg-green-50 rounded-lg">
+                            <div class="text-2xl font-bold text-green-600">${stats.closed}</div>
+                            <div class="text-sm text-green-800">Closed</div>
+                        </div>
+                        <div class="text-center p-3 bg-red-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600">${stats.lost}</div>
+                            <div class="text-sm text-red-800">Lost</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Trends Chart Fallback
+            const trendsChartContainer = document.getElementById('trendsChart').parentElement;
+            trendsChartContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-64 text-gray-500">
+                    <div class="text-2xl mb-4">📈</div>
+                    <h4 class="text-lg font-semibold mb-4">Monthly Trends</h4>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-blue-600 mb-2">${stats.total}</div>
+                        <div class="text-sm text-gray-600">Total Leads</div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            Charts will load when Chart.js is available
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateLeadsTable(leads) {
+            const tbody = document.getElementById('leadsTableBody');
+
+            if (leads.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
+                            <p class="text-lg">No leads found</p>
+                            <p class="text-sm">Create your first lead to get started</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = leads.map(lead => `
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center mr-3">
+                                <span class="text-white font-semibold text-sm">${lead.name.charAt(0).toUpperCase()}</span>
+                            </div>
+                            <div>
+                        <div class="text-sm font-medium text-gray-900">${lead.name}</div>
+                                <div class="text-sm text-gray-500">ID: ${lead._id.slice(-8)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${lead.email || '-'}</div>
+                        <div class="text-sm text-gray-500">${lead.phone || '-'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(lead.status)}">
+                            ${lead.status.replace('_', ' ').toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${new Date(lead.createdAt).toLocaleDateString()}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="view-lead-btn text-slate-400 hover:text-slate-600 transition-colors duration-200" data-lead-id="${lead._id}" title="View Details">
+                                <i class="fas fa-eye"></i>
+                        </button>
+                            <button class="edit-lead-btn text-slate-400 hover:text-slate-600 transition-colors duration-200" data-lead-id="${lead._id}" title="Edit Lead">
+                                <i class="fas fa-edit"></i>
+                        </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Add event listeners to the new buttons
+            tbody.querySelectorAll('.view-lead-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const leadId = this.getAttribute('data-lead-id');
+                    console.log('View lead clicked (direct):', leadId);
+                    viewLead(leadId);
+                });
+            });
+
+            tbody.querySelectorAll('.edit-lead-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const leadId = this.getAttribute('data-lead-id');
+                    console.log('Edit lead clicked (direct):', leadId);
+                    editLead(leadId);
+                });
+            });
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'new': 'bg-blue-100 text-blue-800',
+                'contacted': 'bg-yellow-100 text-yellow-800',
+                'qualified': 'bg-purple-100 text-purple-800',
+                'proposal_sent': 'bg-indigo-100 text-indigo-800',
+                'closed': 'bg-green-100 text-green-800',
+                'lost': 'bg-red-100 text-red-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Modal Functions
+        function openCreateLeadModal() {
+            document.getElementById('createLeadModal').classList.remove('hidden');
+        }
+
+        function closeCreateLeadModal() {
+            document.getElementById('createLeadModal').classList.add('hidden');
+            document.getElementById('createLeadForm').reset();
+        }
+
+        function openEditLeadModal() {
+            document.getElementById('editLeadModal').classList.remove('hidden');
+        }
+
+        function closeEditLeadModal() {
+            document.getElementById('editLeadModal').classList.add('hidden');
+        }
+
+        function openLeadDetailModal() {
+            document.getElementById('leadDetailModal').classList.remove('hidden');
+        }
+
+        function closeLeadDetailModal() {
+            document.getElementById('leadDetailModal').classList.add('hidden');
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+
+            const icons = {
+                success: 'fas fa-check',
+                error: 'fas fa-times',
+                warning: 'fas fa-exclamation',
+                info: 'fas fa-info'
+            };
+
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 transform transition-all duration-300 translate-x-full`;
+            toast.innerHTML = `
+                <i class="${icons[type]}"></i>
+                <span>${message}</span>
+                <button data-action="close-toast" data-toast-id="${toastId}" class="ml-4 text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                closeToast(toastId);
+            }, 5000);
+        }
+
+        function closeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        // Form Handlers
+        document.getElementById('createLeadForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const createBtn = document.getElementById('createLeadBtn');
+            const createBtnText = document.getElementById('createBtnText');
+            const createBtnSpinner = document.getElementById('createBtnSpinner');
+
+            // Show loading state
+            createBtn.disabled = true;
+            createBtnText.textContent = 'Creating...';
+            createBtnSpinner.classList.remove('hidden');
+
+            const formData = {
+                name: document.getElementById('leadName').value,
+                email: document.getElementById('leadEmail').value,
+                phone: document.getElementById('leadPhone').value,
+                status: document.getElementById('leadStatus').value,
+                notes: document.getElementById('leadNotes').value
+            };
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/web/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeCreateLeadModal();
+                    loadDashboard();
+                    showToast('Lead created successfully!', 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to create lead');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                createBtn.disabled = false;
+                createBtnText.textContent = 'Create Lead';
+                createBtnSpinner.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('editLeadForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const editBtn = document.getElementById('editLeadBtn');
+            const editBtnText = document.getElementById('editBtnText');
+            const editBtnSpinner = document.getElementById('editBtnSpinner');
+
+            // Show loading state
+            editBtn.disabled = true;
+            editBtnText.textContent = 'Updating...';
+            editBtnSpinner.classList.remove('hidden');
+
+            const leadId = document.getElementById('editLeadId').value;
+            const formData = {
+                name: document.getElementById('editLeadName').value,
+                email: document.getElementById('editLeadEmail').value,
+                phone: document.getElementById('editLeadPhone').value,
+                status: document.getElementById('editLeadStatus').value
+            };
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/web/leads/${leadId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeEditLeadModal();
+                    loadDashboard();
+                    showToast('Lead updated successfully!', 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to update lead');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                editBtn.disabled = false;
+                editBtnText.textContent = 'Update Lead';
+                editBtnSpinner.classList.add('hidden');
+            }
+        });
+
+        // Lead Actions
+        async function viewLead(leadId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/web/leads/${leadId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentLead = data.lead;
+                    displayLeadDetails(data.lead);
+                    openLeadDetailModal();
+                } else {
+                    throw new Error(data.error || 'Failed to load lead');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        function displayLeadDetails(lead) {
+            document.getElementById('leadDetailTitle').textContent = lead.name;
+
+            const content = `
+                <div class="space-y-6">
+                    <!-- Basic Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-2">Contact Information</h4>
+                            <div class="space-y-2">
+                                <div><span class="font-medium">Name:</span> ${lead.name}</div>
+                                <div><span class="font-medium">Email:</span> ${lead.email || 'Not provided'}</div>
+                                <div><span class="font-medium">Phone:</span> ${lead.phone || 'Not provided'}</div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-2">Status & Timeline</h4>
+                            <div class="space-y-2">
+                                <div><span class="font-medium">Status:</span> <span class="px-2 py-1 text-xs rounded-full ${getStatusColor(lead.status)}">${lead.status.replace('_', ' ').toUpperCase()}</span></div>
+                                <div><span class="font-medium">Created:</span> ${new Date(lead.createdAt).toLocaleDateString()}</div>
+                                <div><span class="font-medium">Updated:</span> ${new Date(lead.updatedAt).toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-2">Notes</h4>
+                        <div id="notesList">
+                            ${lead.notes && lead.notes.length > 0 ?
+                    lead.notes.map(note => `
+                                    <div class="bg-white p-3 rounded border mb-2">
+                                        <div class="text-sm text-gray-600">${new Date(note.createdAt).toLocaleDateString()}</div>
+                                        <div class="text-gray-900">${note.content}</div>
+                                    </div>
+                                `).join('') :
+                    '<p class="text-gray-500 italic">No notes yet</p>'
+                }
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <input type="text" id="newNote" placeholder="Add a note..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                            <button data-action="add-note" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Follow-ups Section -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-gray-900 mb-2">Follow-ups</h4>
+                        <div id="followUpsList">
+                            ${lead.followUps && lead.followUps.length > 0 ?
+                    lead.followUps.map(followUp => `
+                                    <div class="bg-white p-3 rounded border mb-2">
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <div class="font-medium">${new Date(followUp.scheduledDate).toLocaleDateString()}</div>
+                                                <div class="text-sm text-gray-600">${followUp.notes || 'No notes'}</div>
+                                            </div>
+                                            <span class="px-2 py-1 text-xs rounded-full ${followUp.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                                ${followUp.completed ? 'Completed' : 'Pending'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                `).join('') :
+                    '<p class="text-gray-500 italic">No follow-ups scheduled</p>'
+                }
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <input type="number" id="followUpDays" placeholder="Days" min="1" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                            <input type="text" id="followUpNotes" placeholder="Follow-up notes..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                            <button onclick="setFollowUp()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                                <i class="fas fa-calendar-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('leadDetailContent').innerHTML = content;
+
+            // Follow-up button is handled via event delegation
+        }
+
+        async function editLead(leadId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/web/leads/${leadId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const lead = data.lead;
+                    document.getElementById('editLeadId').value = lead._id;
+                    document.getElementById('editLeadName').value = lead.name;
+                    document.getElementById('editLeadEmail').value = lead.email || '';
+                    document.getElementById('editLeadPhone').value = lead.phone || '';
+                    document.getElementById('editLeadStatus').value = lead.status;
+                    openEditLeadModal();
+                } else {
+                    throw new Error(data.error || 'Failed to load lead');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function addNote() {
+            const noteContent = document.getElementById('newNote').value.trim();
+            if (!noteContent) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/web/leads/${currentLead._id}/notes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ note: noteContent })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('newNote').value = '';
+                    viewLead(currentLead._id); // Refresh the modal
+                    showToast('Note added successfully!', 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to add note');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function setFollowUp() {
+            console.log('=== setFollowUp function called! ===');
+
+            const daysInput = document.getElementById('followUpDays');
+            const notesInput = document.getElementById('followUpNotes');
+
+            console.log('Days input element:', daysInput);
+            console.log('Notes input element:', notesInput);
+
+            if (!daysInput || !notesInput) {
+                console.error('Input elements not found!');
+                showToast('Error: Input fields not found', 'error');
+                return;
+            }
+
+            const days = parseInt(daysInput.value);
+            const notes = notesInput.value.trim();
+
+            console.log('Days:', days, 'Notes:', notes);
+            console.log('Current lead:', currentLead);
+
+            if (!days || days < 1) {
+                console.log('Invalid days, showing warning');
+                showToast('Please enter a valid number of days', 'warning');
+                return;
+            }
+
+            if (!currentLead || !currentLead._id) {
+                console.error('No current lead selected!');
+                showToast('Error: No lead selected', 'error');
+                return;
+            }
+
+            try {
+                console.log('Making API call...');
+                const token = localStorage.getItem('token');
+                console.log('Token:', token ? 'Found' : 'Not found');
+
+                const requestBody = { days, notes };
+                console.log('Request body:', requestBody);
+                console.log('Lead ID:', currentLead._id);
+
+                const response = await fetch(`/api/web/leads/${currentLead._id}/followup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    daysInput.value = '';
+                    notesInput.value = '';
+                    await viewLead(currentLead._id); // Refresh the modal
+                    showToast('Follow-up scheduled successfully!', 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to set follow-up');
+                }
+            } catch (error) {
+                console.error('Error in setFollowUp:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+                e.target.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Superior Closings</title>
+
+    <!-- Design System: Ethereal Minimalist -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0f172a', // Solid Black/Slate
+                        'primary-hover': '#334155',
+                        accent: '#6366f1', // Ethereal Indigo
+                        surface: 'rgba(255, 255, 255, 0.7)', // Glass
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            background-image:
+                radial-gradient(at 10% 10%, rgba(230, 230, 255, 0.8) 0%, transparent 60%),
+                radial-gradient(at 90% 10%, rgba(220, 240, 255, 0.8) 0%, transparent 60%),
+                radial-gradient(at 50% 90%, rgba(240, 230, 250, 0.5) 0%, transparent 80%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 antialiased min-h-screen flex items-center justify-center">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="glass-panel max-w-md w-full space-y-8 p-10 rounded-2xl shadow-2xl">
+            <div>
+                <div class="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-primary/10">
+                    <i class="fas fa-user-plus text-primary text-3xl"></i>
+                </div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Create your account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Join the SMS Lead Management System
+                </p>
+            </div>
+            <form class="mt-8 space-y-6" id="registerForm">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="name" class="sr-only">Full Name</label>
+                        <input id="name" name="name" type="text" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Full Name">
+                    </div>
+                    <div>
+                        <label for="phoneNumber" class="sr-only">Phone Number</label>
+                        <input id="phoneNumber" name="phoneNumber" type="tel" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Phone Number (+1234567890)">
+                    </div>
+                    <div>
+                        <label for="email" class="sr-only">Email address (Optional)</label>
+                        <input id="email" name="email" type="email"
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Email address (Optional)">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Password (min 6 characters)">
+                    </div>
+                    <div>
+                        <label for="confirmPassword" class="sr-only">Confirm Password</label>
+                        <input id="confirmPassword" name="confirmPassword" type="password" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Confirm Password">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" id="registerButton"
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-user-plus"></i>
+                        </span>
+                        <span id="registerBtnText">Create Account</span>
+                        <span id="registerBtnSpinner" class="hidden">
+                            <i class="fas fa-spinner fa-spin ml-2"></i>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <a href="/login" class="font-medium text-primary hover:text-accent transition-colors">
+                        Already have an account? Sign in
+                    </a>
+                </div>
+            </form>
+
+            <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"></div>
+            <div id="successMessage"
+                class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const registerBtn = document.getElementById('registerButton');
+            const registerBtnText = document.getElementById('registerBtnText');
+            const registerBtnSpinner = document.getElementById('registerBtnSpinner');
+
+            // Show loading state
+            registerBtn.disabled = true;
+            registerBtnText.textContent = 'Creating Account...';
+            registerBtnSpinner.classList.remove('hidden');
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+
+            // Clear previous messages
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            // Validate phone number format
+            if (!phoneNumber.startsWith('+') || phoneNumber.length < 10) {
+                errorDiv.textContent = 'Phone number must be in international format (e.g., +1234567890)';
+                errorDiv.classList.remove('hidden');
+                registerBtn.disabled = false;
+                registerBtnText.textContent = 'Create Account';
+                registerBtnSpinner.classList.add('hidden');
+                return;
+            }
+
+            // Validate password
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.classList.remove('hidden');
+                registerBtn.disabled = false;
+                registerBtnText.textContent = 'Create Account';
+                registerBtnSpinner.classList.add('hidden');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters long';
+                errorDiv.classList.remove('hidden');
+                registerBtn.disabled = false;
+                registerBtnText.textContent = 'Create Account';
+                registerBtnSpinner.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email: email || undefined,
+                        phoneNumber,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    successDiv.textContent = 'Account created successfully! Redirecting to login...';
+                    successDiv.classList.remove('hidden');
+
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                // Reset button state
+                registerBtn.disabled = false;
+                registerBtnText.textContent = 'Create Account';
+                registerBtnSpinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>
