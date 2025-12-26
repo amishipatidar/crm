@@ -73,7 +73,7 @@ A powerful, AI-driven Lead Management System designed for high-performance title
 
 ---
 
-## 📱 SMS Commands Guide
+## SMS Commands Guide
 
 Agents can manage leads directly via SMS using natural language.
 
