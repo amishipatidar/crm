@@ -32,6 +32,8 @@ const setupSecurity = (app) => {
       const allowedOrigins = [
         'http://localhost:3000',
         'http://localhost:3001', 
+        'https://superior-closings-crm.onrender.com',
+        process.env.RENDER_EXTERNAL_URL,
         'http://98.87.48.222',
         'https://98.87.48.222',
         'http://3.238.1.38',
