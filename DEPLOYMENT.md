@@ -44,6 +44,7 @@ Scroll down to **Environment Variables** and add the following keys from your lo
 | `SENDGRID_API_KEY` | Your SendGrid Key |
 | `GEMINI_API_KEY` | Your Google Gemini Key |
 | `SESSION_SECRET` | A long random string (e.g., production-secret-key) |
+| `JWT_SECRET` | A long random string (different from session secret) for secure logins |
 
 ## 5. Deploy
 1.  Click **Create Web Service**.

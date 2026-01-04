@@ -44,7 +44,9 @@ class WebRoutesController {
    */
   async smsInstructionsPage(req, res) {
     try {
-      res.render('sms-instructions');
+      res.render('sms-instructions', {
+        twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER || 'Not Configured'
+      });
     } catch (error) {
       logger.error('Error serving SMS instructions page:', error);
       res.status(500).render('error', {
