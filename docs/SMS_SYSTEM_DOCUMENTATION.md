@@ -4,12 +4,12 @@
 This system allows real estate agents to manage leads through SMS messages using natural language processing powered by Google Gemini AI. The system processes SMS commands and performs lead management operations automatically.
 
 ## Key Features
-- ✅ **Natural Language Processing**: Understands conversational SMS commands
-- ✅ **Duplicate Prevention**: Prevents processing the same message multiple times
-- ✅ **Multiple Lead Identification**: Find leads by name, email, phone, or ID
-- ✅ **Comprehensive Lead Management**: Create, update, view, and manage leads
-- ✅ **Follow-up Scheduling**: Set automatic follow-up reminders
-- ✅ **Dashboard Integration**: Full web interface for detailed management
+-  **Natural Language Processing**: Understands conversational SMS commands
+-  **Duplicate Prevention**: Prevents processing the same message multiple times
+-  **Multiple Lead Identification**: Find leads by name, email, phone, or ID
+-  **Comprehensive Lead Management**: Create, update, view, and manage leads
+-  **Follow-up Scheduling**: Set automatic follow-up reminders
+-  **Dashboard Integration**: Full web interface for detailed management
 
 ## Available Operations
 
@@ -25,11 +25,11 @@ Add lead: Mike Johnson, mike@company.com, 555-456-7890, status contacted, follow
 
 **Response Format:**
 ```
-✅ Lead created: [Name] (ID: [LeadID])
+Lead created: [Name] (ID: [LeadID])
 Email: [Email]
 Phone: [Phone]
 Status: [Status]
-📅 Follow-up scheduled in [X] days (if specified)
+Follow-up scheduled in [X] days (if specified)
 ```
 
 ### 2. Update Lead
@@ -45,7 +45,7 @@ Update lead [LEAD_ID] status to proposal_sent
 
 **Response Format:**
 ```
-✅ Lead [Name] updated: [Updated Fields]
+Lead [Name] updated: [Updated Fields]
 ```
 
 ### 3. Set Follow-up
@@ -61,7 +61,7 @@ Follow up lead [LEAD_ID] in 5 days
 
 **Response Format:**
 ```
-📅 Follow-up scheduled for [Name] on [Date]
+Follow-up scheduled for [Name] on [Date]
 ```
 
 ### 4. Get Lead Status
@@ -77,13 +77,13 @@ Get lead status [LEAD_ID]
 
 **Response Format:**
 ```
-📋 Lead Status: [Name]
+Lead Status: [Name]
 ID: [LeadID]
 Status: [Status]
 Email: [Email]
 Phone: [Phone]
 Created: [Date]
-📅 Next follow-up: [Date] (if scheduled)
+Next follow-up: [Date] (if scheduled)
 ```
 
 ### 5. List Leads
@@ -97,7 +97,7 @@ List qualified leads
 
 **Response Format:**
 ```
-📋 Latest Lead:
+Latest Lead:
 
 Name: [Name]
 Status: [Status]
@@ -106,7 +106,7 @@ Phone: [Phone]
 ID: [LeadID]
 Created: [Date]
 
-📊 For full lead list and management, visit the dashboard at your web portal.
+For full lead list and management, visit the dashboard at your web portal.
 ```
 
 ### 6. Help
