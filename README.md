@@ -1,7 +1,4 @@
-# Superior Closings CRM 🚀
-
-![Project Banner](https://placehold.co/1200x400/2563eb/ffffff?text=Superior+Closings+CRM)
-
+# Superior Closings CRM 
 > **A powerful, AI-driven Lead Management System designed for high-performance title agents.**
 
 ![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)
@@ -21,26 +18,26 @@ Built with an **"AI-First"** approach, the system strictly leverages Google Gemi
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🧠 AI-Powered Core
+### AI-Powered Core
 - **Natural Language Parsing**: Uses **Google Gemini AI** to interpret complex SMS commands.
   - *Example*: "Create a lead named John Doe, 555-0102" → Auto-extracts Name, Phone, and Email.
 - **Smart Context**: Intelligently distinguishes between creating leads, updating statuses, or booking appointments.
 
-### ⚡ Automated Outreach Engine
+### Automated Outreach Engine
 - **Reliable Scheduling**: Powered by **BullMQ & Redis** to guarantee job execution even during server restarts.
 - **Smart Follow-ups**: Automatically schedules SMS/Email reminders (e.g., *"Follow up in 3 days"*).
 - **Multi-Channel**: Seamlessly integrates **Twilio (SMS)** and **SendGrid (Email)**.
 
-### 🛡️ Enterprise-Grade
+### Enterprise-Grade
 - **Security**: JWT Authentication, Helmet headers, and Rate Limiting.
 - **Scalable Architecture**: Modular service-based design (Controller-Service-Model pattern).
 - **Data Integrity**: MongoDB storage with strict Mongoose validation schemas.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology | Why? |
 | :--- | :--- | :--- |
@@ -52,17 +49,7 @@ Built with an **"AI-First"** approach, the system strictly leverages Google Gemi
 
 ---
 
-## 📸 Screenshots
-
-*(Add your screenshots here: Dashboard, SMS Interaction, etc.)*
-
-| Dashboard View | Mobile SMS View |
-|:---:|:---:|
-| ![Dashboard](https://placehold.co/600x400/e2e8f0/475569?text=Dashboard+Preview) | ![SMS](https://placehold.co/300x600/e2e8f0/475569?text=SMS+Interaction) |
-
----
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js (v18+)
@@ -104,7 +91,7 @@ Built with an **"AI-First"** approach, the system strictly leverages Google Gemi
 
 ---
 
-## 📱 SMS Commands Guide
+## SMS Commands Guide
 
 Agents can manage leads directly via SMS using natural language.
 
@@ -117,7 +104,7 @@ Agents can manage leads directly via SMS using natural language.
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 Detailed documentation is available in the `docs/` directory:
 
@@ -127,7 +114,7 @@ Detailed documentation is available in the `docs/` directory:
 
 ---
 
-## ✅ Testing
+## Testing
 
 The project includes a comprehensive test suite.
 
@@ -144,6 +131,6 @@ node src/services/geminiService.js
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the ISC License.
