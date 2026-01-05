@@ -92,7 +92,6 @@ Detailed documentation has been moved to the `docs/` directory:
 
 - [Deployment Guide](docs/DEPLOYMENT.md)
 - [SMS System Documentation](docs/SMS_SYSTEM_DOCUMENTATION.md)
-- [SMS Test Results](docs/SMS_TEST_RESULTS.md)
 - [Webhook Test Reference](docs/WEBHOOK_TEST_REFERENCE.md)
 
 ---
