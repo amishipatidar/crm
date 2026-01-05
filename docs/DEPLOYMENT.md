@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide for Render.com
+# Deployment Guide for Render.com
 
 This guide will help you deploy your **Superior Closings CRM** to Render.com.
 
