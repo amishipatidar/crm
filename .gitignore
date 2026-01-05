@@ -64,4 +64,11 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
-uploads/ 
+uploads/
+
+# Local Test & Debug Scripts
+debug_env.js
+test_gemini_key.js
+test_gemini_real.js
+test_email_standalone.js
+simulate_tests.ps1
