@@ -10,7 +10,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 **Superior Closings CRM** solves the problem of manual lead tracking for busy title agents. Instead of navigating complex dashboards for every small update, agents can use **Natural Language SMS Commands** to creating leads, setting follow-ups, and managing their pipeline on the go.
 
@@ -108,9 +108,9 @@ Agents can manage leads directly via SMS using natural language.
 
 Detailed documentation is available in the `docs/` directory:
 
-- [🚀 Deployment Guide](docs/DEPLOYMENT.md)
-- [📡 SMS System Documentation](docs/SMS_SYSTEM_DOCUMENTATION.md)
-- [🧪 Webhook Test Reference](docs/WEBHOOK_TEST_REFERENCE.md)
+- [Deployment Guide](docs/DEPLOYMENT.md)
+- [SMS System Documentation](docs/SMS_SYSTEM_DOCUMENTATION.md)
+- [Webhook Test Reference](docs/WEBHOOK_TEST_REFERENCE.md)
 
 ---
 
@@ -134,3 +134,5 @@ node src/services/geminiService.js
 ## License
 
 This project is licensed under the ISC License.
+
+---
