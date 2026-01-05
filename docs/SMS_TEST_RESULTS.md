@@ -1,13 +1,13 @@
-# SMS Webhook Test Results ✅
+# SMS Webhook Test Results 
 
-## Test Suite Status: **PASSING** 🎉
+## Test Suite Status: **PASSING** 
 
 All SMS webhook commands have been successfully tested with comprehensive unit tests.
 
 ### Test Summary
-- **Total Tests**: 19 ✅
-- **Passing**: 19 ✅  
-- **Failing**: 0 ❌
+- **Total Tests**: 19 
+- **Passing**: 19 
+- **Failing**: 0 
 - **Coverage**: 74% of SMS Controller
 
 ## Test Results by Command Type
