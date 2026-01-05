@@ -73,7 +73,7 @@ A powerful, AI-driven Lead Management System designed for high-performance title
 
 ---
 
-## 📱 SMS Commands Guide
+## SMS Commands Guide
 
 Agents can manage leads directly via SMS using natural language.
 
@@ -83,6 +83,17 @@ Agents can manage leads directly via SMS using natural language.
 | **Update Status** | "Mark Sarah Jones as Qualified" |
 | **Follow Up** | "Remind me to call Sarah in 2 days" |
 | **Send Link** | "Send booking link to Sarah Jones" |
+
+---
+
+## Documentation
+
+Detailed documentation has been moved to the `docs/` directory:
+
+- [Deployment Guide](docs/DEPLOYMENT.md)
+- [SMS System Documentation](docs/SMS_SYSTEM_DOCUMENTATION.md)
+- [SMS Test Results](docs/SMS_TEST_RESULTS.md)
+- [Webhook Test Reference](docs/WEBHOOK_TEST_REFERENCE.md)
 
 ---
 
@@ -96,7 +107,7 @@ The project includes a suite of test scripts and simulations.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the ISC License.
 
