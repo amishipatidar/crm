@@ -1,31 +1,31 @@
-# Superior Closings CRM 🚀
+# CRM 
 
 A powerful, AI-driven Lead Management System designed for high-performance title agents. Built with a focus on automation, aesthetic excellence, and multi-channel outreach.
 
-## 🌟 Key Features
+## Key Features
 
-### 🧠 AI-Powered Core
+### AI-Powered Core
 - **Natural Language Parsing**: Uses **Google Gemini AI** to interpret complex SMS commands (e.g., *"Create a lead named John Doe..."*).
 - **Smart Context**: Understands intent for creating leads, booking appointments, and setting status updates.
 
-### ⚡ Automated Outreach Engine
+### Automated Outreach Engine
 - **Robust Scheduling**: Powered by **BullMQ & Redis** to handle reliable, delayed job execution.
 - **Smart Follow-ups**: Automatically schedules SMS/Email follow-ups (e.g., *"Follow up in 3 days"*).
 - **Multi-Channel**: Seamlessly sends messages via **Twilio (SMS)** and **SendGrid (Email)**.
 
-### 🎨 Premium "Ethereal Minimalist" UI
+### Premium "Ethereal Minimalist" UI
 - **Modern Design**: Features a "Slate + Indigo" dual-tone theme with mesh gradients and glassmorphism.
 - **Interactive Dashboard**: Real-time stats, lead tracking, and quick actions.
 - **Bulk Operations**: Drag-and-drop CSV uploader with duplicate detection and validation.
 
-### 🛡️ Enterprise-Grade
+### Enterprise-Grade
 - **Security**: JWT Authentication, Helmet headers, and Rate Limiting.
 - **Data Integrity**: MongoDB storage with Mongoose schemas.
 - **Scalable**: Built on Node.js + Express.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Node.js, Express
 - **Database**: MongoDB (Atlas)
@@ -36,7 +36,7 @@ A powerful, AI-driven Lead Management System designed for high-performance title
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js (v18+)
@@ -91,7 +91,7 @@ Agents can manage leads directly via SMS using natural language.
 
 ---
 
-## 🧪 Testing
+## Testing
 
 The project includes a suite of test scripts and simulations.
 
@@ -106,4 +106,3 @@ The project includes a suite of test scripts and simulations.
 This project is licensed under the ISC License.
 
 ---
-*Built with ❤️ by Amishi Patidar*
